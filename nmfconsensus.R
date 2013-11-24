@@ -223,7 +223,7 @@ matrix.abs.plot <- function(V, axes = F, log = F, norm = T, transpose = T,
     }
     B <- matrix(0, nrow=rows, ncol=cols)
 
-	for (i in 1:rows) {
+    for (i in 1:rows) {
         for (j in 1:cols) {
             if (matrix.order == T) {
                 k <- rows - i + 1
@@ -235,19 +235,19 @@ matrix.abs.plot <- function(V, axes = F, log = F, norm = T, transpose = T,
                     max.val <- max(V)
                     min.val <- min(V)
                 } else {
-		     	    max.val = max.v
+                    max.val = max.v
                     min.val = min.v
                 }
             }
-	        B[k, j] <-  max.val - V[i, j] + min.val
+            B[k, j] <-  max.val - V[i, j] + min.val
         }
     }
 
-	if (transpose == T) {
-	    B <- t(B)
+    if (transpose == T) {
+        B <- t(B)
     }
 
-	if (norm == T) {
+    if (norm == T) {
         image(z = B, zlim = c(min.val, max.val), axes = axes, 
               col = rainbow(100, s = 1.0, v = 0.75, start = 0.0, end = 0.75), 
               main = main, sub = sub, xlab = xlab, ylab = ylab) 
@@ -263,17 +263,17 @@ matrix.abs.plot <- function(V, axes = F, log = F, norm = T, transpose = T,
 # Plot membership "genes"
 #
 metagene.plot <- function(H, main = " ", sub = " ", xlab = "samples ", ylab = "amplitude") {
-	k <- length(H[,1])
-	S <- length(H[1,])
-	index <- 1:S
-	maxval <- max(H)
+    k <- length(H[,1])
+    S <- length(H[1,])
+    index <- 1:S
+    maxval <- max(H)
     minval <- min(H)
 
-	plot(index, H[1,], xlim=c(1, S), ylim=c(minval, maxval), main = main, 
+    plot(index, H[1,], xlim=c(1, S), ylim=c(minval, maxval), main = main, 
          sub = sub, ylab = ylab, xlab = xlab, type="n")
 
-	for (i in 1:k) {
-	    lines(index, H[i,], type="l", col = i, lwd=2)
+    for (i in 1:k) {
+        lines(index, H[i,], type="l", col = i, lwd=2)
     }
 }
 
@@ -288,7 +288,7 @@ ConsPlot <- function(V, col.labels, col.names, main = " ", sub = " ", xlab=" ", 
     for (i in 1:cols) {
         for (j in 1:cols) {
             k <- cols - i + 1
-	        B[k, j] <-  max.val - V[i, j] + min.val
+            B[k, j] <-  max.val - V[i, j] + min.val
         }
     }
 
@@ -335,9 +335,9 @@ ConsPlot <- function(V, col.labels, col.names, main = " ", sub = " ", xlab=" ", 
 # Reads a gene expression dataset in GCT format and converts it into an R data frame
 #
 read.gct <- function(filename = "NULL") { 
-   ds <- read.delim(filename, header=T, sep="\t", quote="", skip=2, row.names=1, 
-                    blank.lines.skip=T, comment.char="", as.is=T)
-   ds <- ds[-1]
-   return(ds)
+    ds <- read.delim(filename, header=T, sep="\t", quote="", skip=2, row.names=1, 
+                     blank.lines.skip=T, comment.char="", as.is=T)
+    ds <- ds[-1]
+    return(ds)
 }
 
