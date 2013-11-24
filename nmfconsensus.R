@@ -33,7 +33,7 @@ nmfconsensus <- function(input.ds, k.init, k.final, num.clusterings, maxniter,
     k.final<-as.integer(k.final)
     num.clusterings<-as.integer(num.clusterings)
     n.iter<-as.integer(maxniter)
-    if (!is.na(rseed)){
+    if (!is.na(rseed)) {
          seed <- as.integer(rseed)
     }
     stopfreq <- as.integer(stopfrequency)
@@ -48,11 +48,9 @@ nmfconsensus <- function(input.ds, k.init, k.final, num.clusterings, maxniter,
 
     cols <- length(A[1,])
     rows <- length(A[,1])
-
     col.names <- names(D)
 
     num.k <- k.final - k.init + 1
-
     rho <- vector(mode = "numeric", length = num.k)
     k.vector <- vector(mode = "numeric", length = num.k)
 
@@ -60,7 +58,6 @@ nmfconsensus <- function(input.ds, k.init, k.final, num.clusterings, maxniter,
     connect.matrix.ordered <- array(0, c(num.k, cols, cols))
 
     for (k in k.init:k.final) {
-
         nf <- layout(matrix(c(1,2,3,4,5,6,7,8), 4, 2, byrow=T), 
                      c(1, 1, 1, 1), c(1, 1), TRUE)
         assign <- matrix(0, nrow = num.clusterings, ncol = cols)
@@ -73,23 +70,22 @@ nmfconsensus <- function(input.ds, k.init, k.final, num.clusterings, maxniter,
                 class <- order(NMF.out$H[,j], decreasing=T)
                 assign[i, j] <- class[1]
             }
-
         }
 
         connect.matrix <- matrix(0, nrow = cols, ncol = cols)
 
         for (i in 1:num.clusterings) {
-           for (j in 1:cols) {
-              for (p in 1:cols) {
-                 if (j != p) {
-                      if (assign[i, j] == assign[i, p]) {
+            for (j in 1:cols) {
+                for (p in 1:cols) {
+                    if (j != p) {
+                        if (assign[i, j] == assign[i, p]) {
+                            connect.matrix[j, p] <- connect.matrix[j, p] + 1
+                        } 
+                    } else {
                         connect.matrix[j, p] <- connect.matrix[j, p] + 1
-                      } 
-                  } else {
-                        connect.matrix[j, p] <- connect.matrix[j, p] + 1
-                  }
-               }
-           }
+                    }
+                }
+            }
         }
 
         connect.matrix = connect.matrix / num.clusterings
@@ -178,8 +174,8 @@ NMF <- function(V, k, maxniter = 2000, seed = 123456, stopconv = 40, stopfreq = 
     new.membership <- vector(mode = "numeric", length = M)
     old.membership <- vector(mode = "numeric", length = M)
     eps <- .Machine$double.eps
-    for (t in 1:maxniter) {
 
+    for (t in 1:maxniter) {
         VP = W %*% H
 
         H <- H * (crossprod(W, V)/crossprod(W, VP)) + eps
@@ -201,6 +197,7 @@ NMF <- function(V, k, maxniter = 2000, seed = 123456, stopconv = 40, stopfreq = 
             old.membership <- new.membership
         }
     }
+
     return(list(W = W, H = H, t = t, error.v = error.v))
 }
 
@@ -221,6 +218,7 @@ matrix.abs.plot <- function(V, axes = F, log = F, norm = T, transpose = T,
     if (log == T) {
         V <- log(V)
     }
+
     B <- matrix(0, nrow=rows, ncol=cols)
 
     for (i in 1:rows) {
@@ -304,31 +302,31 @@ ConsPlot <- function(V, col.labels, col.names, main = " ", sub = " ", xlab=" ", 
             current.tag <- 1 - current.tag
         }
         col.tag[i] <- current.tag
-     }
-     col.tag2 <- rev(col.tag)
-     D[(cols + 1), 2:(cols + 1)] <- ifelse(col.tag %% 2 == 0, 1.02, 1.01)
-     D[1:cols, 1] <- ifelse(col.tag2 %% 2 == 0, 1.02, 1.01)
-     D[(cols + 1), 1] <- 1.03
-     D[1:cols, 2:(cols + 1)] <- B[1:cols, 1:cols]
+    }
+    col.tag2 <- rev(col.tag)
+    D[(cols + 1), 2:(cols + 1)] <- ifelse(col.tag %% 2 == 0, 1.02, 1.01)
+    D[1:cols, 1] <- ifelse(col.tag2 %% 2 == 0, 1.02, 1.01)
+    D[(cols + 1), 1] <- 1.03
+    D[1:cols, 2:(cols + 1)] <- B[1:cols, 1:cols]
 
-     col.map <- c(rainbow(100, s = 1.0, v = 0.75, start = 0.0, end = 0.75), 
+    col.map <- c(rainbow(100, s = 1.0, v = 0.75, start = 0.0, end = 0.75), 
                   "#BBBBBB", "#333333", "#FFFFFF")
-     image(1:(cols + 1), 1:(cols + 1), t(D), col = col.map, axes=FALSE, 
+    image(1:(cols + 1), 1:(cols + 1), t(D), col = col.map, axes=FALSE, 
            main=main, sub=sub, xlab= xlab, ylab=ylab)
 
-     for (i in 1:cols) {
-         col.names[i]  <- paste("      ", substr(col.names[i], 1, 12), sep="")
-         col.names2[i] <- paste(substr(col.names2[i], 1, 12), "     ", sep="")
-     }
+    for (i in 1:cols) {
+        col.names[i]  <- paste("      ", substr(col.names[i], 1, 12), sep="")
+        col.names2[i] <- paste(substr(col.names2[i], 1, 12), "     ", sep="")
+    }
 
-     axis(2, at=1:cols, labels=col.names2, adj= 0.5, tick=FALSE, las = 1, 
-          cex.axis=0.50, font.axis=1, line=-1)
-     axis(2, at=1:cols, labels=col.labels2, adj= 0.5, tick=FALSE, las = 1, 
-          cex.axis=0.65, font.axis=1, line=-1)
-     axis(3, at=2:(cols + 1), labels=col.names, adj= 1, tick=FALSE, las = 3, 
-          cex.axis=0.50, font.axis=1, line=-1)
-     axis(3, at=2:(cols + 1), labels=as.character(col.labels), adj = 1, tick=FALSE, 
-          las = 1, cex.axis=0.65, font.axis=1, line=-1)
+    axis(2, at=1:cols, labels=col.names2, adj= 0.5, tick=FALSE, las = 1, 
+         cex.axis=0.50, font.axis=1, line=-1)
+    axis(2, at=1:cols, labels=col.labels2, adj= 0.5, tick=FALSE, las = 1, 
+         cex.axis=0.65, font.axis=1, line=-1)
+    axis(3, at=2:(cols + 1), labels=col.names, adj= 1, tick=FALSE, las = 3, 
+         cex.axis=0.50, font.axis=1, line=-1)
+    axis(3, at=2:(cols + 1), labels=as.character(col.labels), adj = 1, tick=FALSE, 
+         las = 1, cex.axis=0.65, font.axis=1, line=-1)
 }
 
 #
