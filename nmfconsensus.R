@@ -1,6 +1,8 @@
 #!/usr/bin/env Rscript
 
-nmfconsensus <- function(input.ds, k.init, k.final, num.clusterings, maxniter, error.function,      rseed=123456789, stopconvergence = 40, stopfrequency = 10, doc.string="result", directory="") {
+nmfconsensus <- function(input.ds, k.init, k.final, num.clusterings, maxniter, 
+                         error.function, rseed=123456789, stopconvergence = 40, 
+                         stopfrequency = 10, doc.string="result", directory="") {
 #
 #  GenePattern Methodology for:
 #
@@ -59,11 +61,13 @@ nmfconsensus <- function(input.ds, k.init, k.final, num.clusterings, maxniter, e
 
     for (k in k.init:k.final) {
 
-        nf <- layout(matrix(c(1,2,3,4,5,6,7,8), 4, 2, byrow=T), c(1, 1, 1, 1), c(1, 1), TRUE)
+        nf <- layout(matrix(c(1,2,3,4,5,6,7,8), 4, 2, byrow=T), 
+                     c(1, 1, 1, 1), c(1, 1), TRUE)
         assign <- matrix(0, nrow = num.clusterings, ncol = cols)
 
         for (i in 1:num.clusterings) {
-            NMF.out <- NMF(V = A, k = k, maxniter = n.iter, seed = seed + i, stopconv = stopconv, stopfreq = stopfreq)
+            NMF.out <- NMF(V = A, k = k, maxniter = n.iter, seed = seed + i, 
+                           stopconv = stopconv, stopfreq = stopfreq)
 
             for (j in 1:cols) { # Find membership
                 class <- order(NMF.out$H[,j], decreasing=T)
@@ -117,8 +121,7 @@ nmfconsensus <- function(input.ds, k.init, k.final, num.clusterings, maxniter, e
 
         resultsGct <- data.frame(membership.ordered)
         row.names(resultsGct) <- items.names.ordered
-        filename <- paste(directory, doc.string, ".", "consensus.k.",k, ".gct", sep="", 
-collapse="")
+        filename <- paste(directory, doc.string, ".", "consensus.k.",k, ".gct", sep="", collapse="")
 
         k.index <- k.index + 1
     } # end of loop over k
@@ -135,8 +138,8 @@ collapse="")
     }
 
     y.range <- c(1 - 2*(1 - min(rho)), 1)
-    plot(k.vector, rho, main ="Cophenetic Coefficient", xlim=c(k.init, k.final), ylim=y.range, 
-         xlab = "k", ylab="Cophenetic correlation", type = "n")
+    plot(k.vector, rho, main ="Cophenetic Coefficient", xlim=c(k.init, k.final), 
+         ylim=y.range, xlab = "k", ylab="Cophenetic correlation", type = "n")
     lines(k.vector, rho, type = "l", col = "black")
     points(k.vector, rho, pch=22, type = "p", cex = 1.25, bg = "black", col = "black")
 
@@ -159,19 +162,17 @@ collapse="")
 #
 #####################################################################################
 
-NMF <- function(V, k, maxniter = 2000, seed = 123456, stopconv = 40, stopfreq = 10) {
 #
 # Does the actual Non-negative Matrix Factorization
 #
+NMF <- function(V, k, maxniter = 2000, seed = 123456, stopconv = 40, stopfreq = 10) {
     N <- length(V[,1])
     M <- length(V[1,])
     set.seed(seed)
     W <- matrix(runif(N*k), nrow = N, ncol = k)  # Initialize W and H with random numbers
     H <- matrix(runif(k*M), nrow = k, ncol = M)
 
-
     VP <- matrix(nrow = N, ncol = M)
-
 
     error.v <- vector(mode = "numeric", length = maxniter)
     new.membership <- vector(mode = "numeric", length = M)
@@ -179,26 +180,26 @@ NMF <- function(V, k, maxniter = 2000, seed = 123456, stopconv = 40, stopfreq = 
     eps <- .Machine$double.eps
     for (t in 1:maxniter) {
 
-          VP = W %*% H
+        VP = W %*% H
 
-          H <- H * (crossprod(W, V)/crossprod(W, VP)) + eps
-      VP = W %*% H
-          H.t <- t(H)
-          W <- W * (V %*% H.t)/(VP %*% H.t) + eps
-          error.v[t] <- sqrt(sum((V - VP)^2))/(N * M)
-           if (t %% stopfreq == 0) {
-                for (j in 1:M) {
-                    class <- order(H[,j], decreasing=T)
-                    new.membership[j] <- class[1]
-                 }
-                 if (sum(new.membership == old.membership) == M) {
-                    no.change.count <- no.change.count + 1
-                 } else {
-                    no.change.count <- 0
-                 }
-                 if (no.change.count == stopconv) break
-                 old.membership <- new.membership
-           }
+        H <- H * (crossprod(W, V)/crossprod(W, VP)) + eps
+        VP = W %*% H
+        H.t <- t(H)
+        W <- W * (V %*% H.t)/(VP %*% H.t) + eps
+        error.v[t] <- sqrt(sum((V - VP)^2))/(N * M)
+        if (t %% stopfreq == 0) {
+            for (j in 1:M) {
+                class <- order(H[,j], decreasing=T)
+                new.membership[j] <- class[1]
+            }
+            if (sum(new.membership == old.membership) == M) {
+                no.change.count <- no.change.count + 1
+            } else {
+                no.change.count <- 0
+            }
+            if (no.change.count == stopconv) break
+            old.membership <- new.membership
+        }
     }
     return(list(W = W, H = H, t = t, error.v = error.v))
 }
@@ -209,90 +210,98 @@ NMF <- function(V, k, maxniter = 2000, seed = 123456, stopconv = 40, stopfreq = 
 #
 #####################################################################################
 
-matrix.abs.plot <- function(V, axes = F, log = F, norm = T, transpose = T, matrix.order = T, 
-max.v = 1, min.v = 0, main = " ", sub = " ", xlab = " ", ylab = "  ") {
 #
 # Plots a clustered matrix vor membership visualization
 #
-      rows <- length(V[,1])
-      cols <- length(V[1,])
-      if (log == T) {
-         V <- log(V)
-      }
-      B <- matrix(0, nrow=rows, ncol=cols)
+matrix.abs.plot <- function(V, axes = F, log = F, norm = T, transpose = T, 
+                            matrix.order = T, max.v = 1, min.v = 0, main = " ", 
+                            sub = " ", xlab = " ", ylab = "  ") {
+    rows <- length(V[,1])
+    cols <- length(V[1,])
+    if (log == T) {
+        V <- log(V)
+    }
+    B <- matrix(0, nrow=rows, ncol=cols)
+
 	for (i in 1:rows) {
-           for (j in 1:cols) {
-                if (matrix.order == T) {
-                   k <- rows - i + 1
+        for (j in 1:cols) {
+            if (matrix.order == T) {
+                k <- rows - i + 1
+            } else {
+                k <- i
+            }
+            if (norm == T) {
+                if ((max.v == 1) && (min.v == 0)) {
+                    max.val <- max(V)
+                    min.val <- min(V)
                 } else {
-                   k <- i
+		     	    max.val = max.v
+                    min.val = min.v
                 }
-                if (norm == T) {
-                  if ((max.v == 1) && (min.v == 0)) {
-                     max.val <- max(V)
-                     min.val <- min(V)
-                  } else {
-		     	   max.val = max.v
-                     min.val = min.v
-                  }
-               }
-	     B[k, j] <-  max.val - V[i, j] + min.val
-           }
-      }
-	if (transpose == T) {
-	  B <- t(B)
+            }
+	        B[k, j] <-  max.val - V[i, j] + min.val
         }
+    }
+
+	if (transpose == T) {
+	    B <- t(B)
+    }
+
 	if (norm == T) {
-            image(z = B, zlim = c(min.val, max.val), axes = axes, col = rainbow(100, s = 
-1.0, v = 0.75, start = 0.0, end = 0.75), main = main, sub = sub, xlab = xlab, ylab = ylab) 
-      } else {
-            image(z = B, axes = axes, col = rainbow(100, s = 1, v = 0.6, start = 0.1, end = 
-0.9), main = main, sub = sub, xlab = xlab, ylab = ylab) 
-      }
-      return(list(B, max.val, min.val))
+        image(z = B, zlim = c(min.val, max.val), axes = axes, 
+              col = rainbow(100, s = 1.0, v = 0.75, start = 0.0, end = 0.75), 
+              main = main, sub = sub, xlab = xlab, ylab = ylab) 
+    } else {
+        image(z = B, axes = axes, col = rainbow(100, s = 1, v = 0.6, start = 0.1, 
+              end = 0.9), main = main, sub = sub, xlab = xlab, ylab = ylab) 
+    }
+
+    return(list(B, max.val, min.val))
 }
 
-metagene.plot <- function(H, main = " ", sub = " ", xlab = "samples ", ylab = "amplitude") {
 #
 # Plot membership "genes"
 #
+metagene.plot <- function(H, main = " ", sub = " ", xlab = "samples ", ylab = "amplitude") {
 	k <- length(H[,1])
 	S <- length(H[1,])
 	index <- 1:S
 	maxval <- max(H)
-        minval <- min(H)
-	plot(index, H[1,], xlim=c(1, S), ylim=c(minval, maxval), main = main, sub = sub, 
-ylab = ylab, xlab = xlab, type="n")
+    minval <- min(H)
+
+	plot(index, H[1,], xlim=c(1, S), ylim=c(minval, maxval), main = main, 
+         sub = sub, ylab = ylab, xlab = xlab, type="n")
+
 	for (i in 1:k) {
 	    lines(index, H[i,], type="l", col = i, lwd=2)
-        }
+    }
 }
 
-ConsPlot <- function(V, col.labels, col.names, main = " ", sub = " ", xlab=" ", ylab=" ") {
 #
 # Plots a heatmap plot of a consensus matrix
 #
-     cols <- length(V[1,])
-     B <- matrix(0, nrow=cols, ncol=cols)
-     max.val <- max(V)
-     min.val <- min(V)
-     for (i in 1:cols) {
-         for (j in 1:cols) {
-             k <- cols - i + 1
-	     B[k, j] <-  max.val - V[i, j] + min.val
-          }
-     }
+ConsPlot <- function(V, col.labels, col.names, main = " ", sub = " ", xlab=" ", ylab=" ") {
+    cols <- length(V[1,])
+    B <- matrix(0, nrow=cols, ncol=cols)
+    max.val <- max(V)
+    min.val <- min(V)
+    for (i in 1:cols) {
+        for (j in 1:cols) {
+            k <- cols - i + 1
+	        B[k, j] <-  max.val - V[i, j] + min.val
+        }
+    }
 
-     col.names2 <- rev(col.names)
-     col.labels2 <- rev(col.labels)
-     D <- matrix(0, nrow=(cols + 1), ncol=(cols + 1))
+    col.names2 <- rev(col.names)
+    col.labels2 <- rev(col.labels)
+    D <- matrix(0, nrow=(cols + 1), ncol=(cols + 1))
 
-     col.tag <- vector(length=cols, mode="numeric")
-     current.tag <- 0
-     col.tag[1] <- current.tag
-     for (i in 2:cols) {
+    col.tag <- vector(length=cols, mode="numeric")
+    current.tag <- 0
+    col.tag[1] <- current.tag
+    for (i in 2:cols) {
         if (col.labels[i] != col.labels[i - 1]) {
-             current.tag <- 1 - current.tag
+            current.tag <- 1 - current.tag
         }
         col.tag[i] <- current.tag
      }
@@ -302,34 +311,32 @@ ConsPlot <- function(V, col.labels, col.names, main = " ", sub = " ", xlab=" ", 
      D[(cols + 1), 1] <- 1.03
      D[1:cols, 2:(cols + 1)] <- B[1:cols, 1:cols]
 
-     col.map <- c(rainbow(100, s = 1.0, v = 0.75, start = 0.0, end = 0.75), "#BBBBBB", 
-"#333333", "#FFFFFF")
-     image(1:(cols + 1), 1:(cols + 1), t(D), col = col.map, axes=FALSE, main=main, sub=sub, 
-xlab= xlab, ylab=ylab)
+     col.map <- c(rainbow(100, s = 1.0, v = 0.75, start = 0.0, end = 0.75), 
+                  "#BBBBBB", "#333333", "#FFFFFF")
+     image(1:(cols + 1), 1:(cols + 1), t(D), col = col.map, axes=FALSE, 
+           main=main, sub=sub, xlab= xlab, ylab=ylab)
+
      for (i in 1:cols) {
          col.names[i]  <- paste("      ", substr(col.names[i], 1, 12), sep="")
          col.names2[i] <- paste(substr(col.names2[i], 1, 12), "     ", sep="")
      }
 
-     axis(2, at=1:cols, labels=col.names2, adj= 0.5, tick=FALSE, las = 1, cex.axis=0.50, 
-font.axis=1, line=-1)
-     axis(2, at=1:cols, labels=col.labels2, adj= 0.5, tick=FALSE, las = 1, cex.axis=0.65, 
-font.axis=1, line=-1)
-
-     axis(3, at=2:(cols + 1), labels=col.names, adj= 1, tick=FALSE, las = 3, cex.axis=0.50, 
-font.axis=1, line=-1)
-     axis(3, at=2:(cols + 1), labels=as.character(col.labels), adj = 1, tick=FALSE, las = 1, 
-cex.axis=0.65, font.axis=1, line=-1)
-
-     return()
+     axis(2, at=1:cols, labels=col.names2, adj= 0.5, tick=FALSE, las = 1, 
+          cex.axis=0.50, font.axis=1, line=-1)
+     axis(2, at=1:cols, labels=col.labels2, adj= 0.5, tick=FALSE, las = 1, 
+          cex.axis=0.65, font.axis=1, line=-1)
+     axis(3, at=2:(cols + 1), labels=col.names, adj= 1, tick=FALSE, las = 3, 
+          cex.axis=0.50, font.axis=1, line=-1)
+     axis(3, at=2:(cols + 1), labels=as.character(col.labels), adj = 1, tick=FALSE, 
+          las = 1, cex.axis=0.65, font.axis=1, line=-1)
 }
 
-read.gct <- function(filename = "NULL") { 
 #
 # Reads a gene expression dataset in GCT format and converts it into an R data frame
 #
+read.gct <- function(filename = "NULL") { 
    ds <- read.delim(filename, header=T, sep="\t", quote="", skip=2, row.names=1, 
-blank.lines.skip=T, comment.char="", as.is=T)
+                    blank.lines.skip=T, comment.char="", as.is=T)
    ds <- ds[-1]
    return(ds)
 }
