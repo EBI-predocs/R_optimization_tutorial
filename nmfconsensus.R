@@ -1,8 +1,9 @@
 #!/usr/bin/env Rscript
 
-nmfconsensus <- function(input.ds, k.init, k.final, num.clusterings, maxniter, 
-                         error.function, rseed=123456789, stopconvergence = 40, 
-                         stopfrequency = 10, doc.string="result", directory="") {
+nmfconsensus <- function(input.ds="100+100x50.gct", k.init=2, k.final=5, num.clusterings=3,
+                         maxniter=1000, error.function='euclidean', rseed=123456789, 
+                         stopconvergence = 40, stopfrequency = 10, doc.string="result", 
+                         directory="") {
 #
 #  GenePattern Methodology for:
 #
@@ -34,7 +35,8 @@ nmfconsensus <- function(input.ds, k.init, k.final, num.clusterings, maxniter,
     num.clusterings<-as.integer(num.clusterings)
     n.iter<-as.integer(maxniter)
     if (!is.na(rseed)) {
-         seed <- as.integer(rseed)
+        seed <- as.integer(rseed)
+        set.seed(seed)
     }
     stopfreq <- as.integer(stopfrequency)
     stopconv <- as.integer(stopconvergence)
@@ -58,8 +60,6 @@ nmfconsensus <- function(input.ds, k.init, k.final, num.clusterings, maxniter,
     connect.matrix.ordered <- array(0, c(num.k, cols, cols))
 
     for (k in k.init:k.final) {
-        nf <- layout(matrix(c(1,2,3,4,5,6,7,8), 4, 2, byrow=T), 
-                     c(1, 1, 1, 1), c(1, 1), TRUE)
         assign <- matrix(0, nrow = num.clusterings, ncol = cols)
 
         for (i in 1:num.clusterings) {
@@ -139,17 +139,21 @@ nmfconsensus <- function(input.ds, k.init, k.final, num.clusterings, maxniter,
     lines(k.vector, rho, type = "l", col = "black")
     points(k.vector, rho, pch=22, type = "p", cex = 1.25, bg = "black", col = "black")
 
-    k.linkage = 2
-    k.index.linkage = which(c(k.init:k.final)==k.linkage)
-    sub.string <- paste(doc.string, " k=", k.linkage, sep="")
-    plot(HC, xlab="samples", cex = 0.75, labels = col.names, sub = sub.string, col = 
-        "blue", main = paste("Ordered Linkage Tree. Coph=", rho[k.index.linkage]))
+    my.exprs = t(A)
+    my.svd = svd(cov(my.exprs))
+    my.iloads = solve(t(my.svd$v))
+    my.weights = my.svd$d
+    my.scores = my.exprs %*% my.iloads
+    my.title = paste("PCA of samples capturing\n",
+        round(100*sum(my.weights[1:2])/sum(my.weights), digits=1), "% of variance")
+    my.pc1 = paste("PC1 (", round(100*my.weights[1]/sum(my.weights), 1), "%)")
+    my.pc2 = paste("PC2 (", round(100*my.weights[2]/sum(my.weights), 1), "%)")
+    plot(my.scores[,1], my.scores[,2], main=my.title, xlab=my.pc1, ylab=my.pc2)
 
     dev.off()
 
     xx <- cbind(k.vector, rho)
-#    write(xx, file= paste(directory, doc.string, ".", "cophenetic.txt", sep=""))
-    return(xx)
+    write(connect.matrix.ordered, file= file.path("util", ".cophenetic"))
 }
 
 #####################################################################################
@@ -210,9 +214,10 @@ NMF <- function(V, k, maxniter = 2000, seed = 123456, stopconv = 40, stopfreq = 
 #
 # Plots a clustered matrix vor membership visualization
 #
-matrix.abs.plot <- function(V, axes = F, log = F, norm = T, transpose = T, 
-                            matrix.order = T, max.v = 1, min.v = 0, main = " ", 
-                            sub = " ", xlab = " ", ylab = "  ") {
+matrix.abs.plot <- function(V, axes = F, log = F, transpose = T,  main = " ", sub = " ", xlab = " ", ylab = "  ", plot = T) {
+    max.v = 1
+    min.v = 0
+
     rows <- length(V[,1])
     cols <- length(V[1,])
     if (log == T) {
@@ -223,20 +228,9 @@ matrix.abs.plot <- function(V, axes = F, log = F, norm = T, transpose = T,
 
     for (i in 1:rows) {
         for (j in 1:cols) {
-            if (matrix.order == T) {
-                k <- rows - i + 1
-            } else {
-                k <- i
-            }
-            if (norm == T) {
-                if ((max.v == 1) && (min.v == 0)) {
-                    max.val <- max(V)
-                    min.val <- min(V)
-                } else {
-                    max.val = max.v
-                    min.val = min.v
-                }
-            }
+            k <- rows - i + 1
+            max.val <- max(V)
+            min.val <- min(V)
             B[k, j] <-  max.val - V[i, j] + min.val
         }
     }
@@ -245,88 +239,13 @@ matrix.abs.plot <- function(V, axes = F, log = F, norm = T, transpose = T,
         B <- t(B)
     }
 
-    if (norm == T) {
+    if (plot == T) {
         image(z = B, zlim = c(min.val, max.val), axes = axes, 
               col = rainbow(100, s = 1.0, v = 0.75, start = 0.0, end = 0.75), 
               main = main, sub = sub, xlab = xlab, ylab = ylab) 
-    } else {
-        image(z = B, axes = axes, col = rainbow(100, s = 1, v = 0.6, start = 0.1, 
-              end = 0.9), main = main, sub = sub, xlab = xlab, ylab = ylab) 
     }
 
     return(list(B, max.val, min.val))
-}
-
-#
-# Plot membership "genes"
-#
-metagene.plot <- function(H, main = " ", sub = " ", xlab = "samples ", ylab = "amplitude") {
-    k <- length(H[,1])
-    S <- length(H[1,])
-    index <- 1:S
-    maxval <- max(H)
-    minval <- min(H)
-
-    plot(index, H[1,], xlim=c(1, S), ylim=c(minval, maxval), main = main, 
-         sub = sub, ylab = ylab, xlab = xlab, type="n")
-
-    for (i in 1:k) {
-        lines(index, H[i,], type="l", col = i, lwd=2)
-    }
-}
-
-#
-# Plots a heatmap plot of a consensus matrix
-#
-ConsPlot <- function(V, col.labels, col.names, main = " ", sub = " ", xlab=" ", ylab=" ") {
-    cols <- length(V[1,])
-    B <- matrix(0, nrow=cols, ncol=cols)
-    max.val <- max(V)
-    min.val <- min(V)
-    for (i in 1:cols) {
-        for (j in 1:cols) {
-            k <- cols - i + 1
-            B[k, j] <-  max.val - V[i, j] + min.val
-        }
-    }
-
-    col.names2 <- rev(col.names)
-    col.labels2 <- rev(col.labels)
-    D <- matrix(0, nrow=(cols + 1), ncol=(cols + 1))
-
-    col.tag <- vector(length=cols, mode="numeric")
-    current.tag <- 0
-    col.tag[1] <- current.tag
-    for (i in 2:cols) {
-        if (col.labels[i] != col.labels[i - 1]) {
-            current.tag <- 1 - current.tag
-        }
-        col.tag[i] <- current.tag
-    }
-    col.tag2 <- rev(col.tag)
-    D[(cols + 1), 2:(cols + 1)] <- ifelse(col.tag %% 2 == 0, 1.02, 1.01)
-    D[1:cols, 1] <- ifelse(col.tag2 %% 2 == 0, 1.02, 1.01)
-    D[(cols + 1), 1] <- 1.03
-    D[1:cols, 2:(cols + 1)] <- B[1:cols, 1:cols]
-
-    col.map <- c(rainbow(100, s = 1.0, v = 0.75, start = 0.0, end = 0.75), 
-                  "#BBBBBB", "#333333", "#FFFFFF")
-    image(1:(cols + 1), 1:(cols + 1), t(D), col = col.map, axes=FALSE, 
-           main=main, sub=sub, xlab= xlab, ylab=ylab)
-
-    for (i in 1:cols) {
-        col.names[i]  <- paste("      ", substr(col.names[i], 1, 12), sep="")
-        col.names2[i] <- paste(substr(col.names2[i], 1, 12), "     ", sep="")
-    }
-
-    axis(2, at=1:cols, labels=col.names2, adj= 0.5, tick=FALSE, las = 1, 
-         cex.axis=0.50, font.axis=1, line=-1)
-    axis(2, at=1:cols, labels=col.labels2, adj= 0.5, tick=FALSE, las = 1, 
-         cex.axis=0.65, font.axis=1, line=-1)
-    axis(3, at=2:(cols + 1), labels=col.names, adj= 1, tick=FALSE, las = 3, 
-         cex.axis=0.50, font.axis=1, line=-1)
-    axis(3, at=2:(cols + 1), labels=as.character(col.labels), adj = 1, tick=FALSE, 
-         las = 1, cex.axis=0.65, font.axis=1, line=-1)
 }
 
 #
@@ -336,6 +255,40 @@ read.gct <- function(filename = "NULL") {
     ds <- read.delim(filename, header=T, sep="\t", quote="", skip=2, row.names=1, 
                      blank.lines.skip=T, comment.char="", as.is=T)
     ds <- ds[-1]
-    return(ds)
+    return(ds[,colSums(is.na(ds)) != nrow(ds)]) # why do I need this all of a sudden?
+}
+
+#
+# Write a data matrix to GCT format
+#
+write.gct <- function (gct, filename)
+{
+    f <- file(filename, "w")
+    cat("#1.2", "\n", file = f, append = TRUE, sep = "")
+    cat(dim(gct)[1], "\t", dim(gct)[2], "\n", file = f, append = TRUE, sep = "")
+
+    cat("Name", "\t", file = f, append = TRUE, sep = "")
+    cat("Description", "\t", file = f, append = TRUE, sep = "")
+    cat(c(1:(dim(gct)[2]-1)), file = f, append = TRUE, sep = "\t")
+
+    names <- names(gct)
+    for (j in 1:length(names)) {
+        cat("\t", names[j], file = f, append = TRUE, sep = "")
+    }
+    cat("\n", file = f, append = TRUE, sep = "")
+    oldWarn <- options(warn = -1)
+
+    m <- matrix(nrow = dim(gct)[1], ncol = dim(gct)[2] +  2)
+    m[, 1] <- row.names(gct)
+    m[, 2] <- row.names(gct)
+    index <- 3
+    for (i in 1:dim(gct)[2]) {
+        m[, index] <- gct[, i]
+        index <- index + 1
+    }
+    write.table(m, file = f, append = TRUE, quote = FALSE, sep = "\t", eol = "\n", col.names = FALSE, row.names = FALSE)
+    close(f)
+    options(warn = 0)
+    return(gct)
 }
 
