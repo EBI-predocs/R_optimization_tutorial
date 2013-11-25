@@ -65,13 +65,19 @@ infamous `for` loops).
 One could also take the opposite point of view and argue that all high performance
 code should be written in a low-level language, such as C or Fortran. But then again,
 sanitizing IO, parallelizing execution, etc. are much easier done in a high level
-language such as R. Ideally, it should be a combination of both? Turns out it is already,
+language such as R. Ideally, it should be a combination of both? Turns out it already is,
 with many packages implementing their core machinery in a compiled language that is
 then called by R.
 
- * links LAPACK/BLAS -> matrix ops are about as fast as it gets (if compiled with)
- * critical elements could be written in C
- * spending time in R vs C code: eg. for vs apply
+ * R can be [compiled][rcompile] with [LAPACK][lapack] and [BLAS][blas] support. Those
+     are linear algebra libraries that implement optimized operations such as matrix
+     multiplications, among others. Compiling with support for those can dramatically
+     speed up operations such as `%*%`, as well as allow for implicit 
+     [parallelization][openblas].
+ * Performance-critical code chunks can also be compiled into a dynamically linked
+     [C, Fortran][dynload] or [C++][rcpp] library and then called from R. By moving those
+     chunks to a compiled language (which means, in the easiest case, using `apply` instead
+     of `for`) most of the execution time can be spent in compiled code.
 
 **Using the profiler to find bottlenecks**
 
@@ -84,4 +90,10 @@ then called by R.
 [nmf]: http://en.wikipedia.org/wiki/Non-negative_matrix_factorization
 [nmfimg]: http://upload.wikimedia.org/wikipedia/commons/f/f9/NMF.png
 [bigo]: http://en.wikipedia.org/wiki/Big_O_notation
+[rcompile]: https://projects.archlinux.org/svntogit/packages.git/tree/trunk/PKGBUILD?h=packages/r
+[lapack]: http://en.wikipedia.org/wiki/LAPACK
+[blas]: http://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms
+[openblas]: http://www.openblas.net/
+[dynload]: http://users.stat.umn.edu/~geyer/rc/
+[rcpp]: http://dirk.eddelbuettel.com/code/rcpp.html
 
