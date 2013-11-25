@@ -294,13 +294,15 @@ write.gct <- function (gct, filename)
 # Benchmarking code, ***DO NOT CHANGE THIS***
 #
 #####################################################################################
-run_nmf = function() {
+runNMF = function() {
     if (! file.exists(".name")) {
+        if (! interactive())
+            stop("need to run in interactive mode first time")
         name = readline("enter your name: ")
         cat(name, "\n", file=".name")
     }
     else {
-        read.delim(".name", header=F)
+        name = as.character(read.delim(".name", header=F)$V1)
     }
 
     num.genes=50
@@ -332,12 +334,14 @@ run_nmf = function() {
     if (! file.exists(".basetime")) { # run baseline benchmark
         cat("Running baseline benchmark... this will take a minute or two\n")
         runtime = system.time(nmfconsensus(A, 2, 5, 3, 500, 'euclidean'))
+        runtime = as.double(runtime)[1]
 
         if (md5sum('.cophenetic') != "78fbfc339cd56f709459d2c2bfc25b95")
             stop("You introduced an error somewhere, the result doesn't match the reference")
 
-        cat(as.double(runtime)[1], "\n", file=".basetime")
-        cat("\ndone in", as.double(runtime)[1], "seconds\n\n")
+        cat(runtime, "\n", file=".basetime")
+        cat("\ndone in", runtime, "seconds\n\n")
+        basetime = runtime
     }
     else { # run comparative benchmark
         cat("\nRunning benchmark... this will take a minute or two\n")
@@ -350,8 +354,14 @@ run_nmf = function() {
         runtime = as.double(runtime)[1]
         cat(runtime, "\n", file=".runtime")
         cat("Finished in ", runtime , "(", as.double(basetime)/runtime,"x speedup)\n")
-
-        # send comparative result
     }
+
+    library(RCurl) # post results
+    invisible(postForm("http://www.ebi.ac.uk/~schubert/scoreboard.php", name=name, 
+                       score=as.character(as.double(basetime)/as.double(runtime))))
+}
+
+if (! interactive()) {
+    runNMF()
 }
 
