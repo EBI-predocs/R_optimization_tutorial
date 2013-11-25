@@ -15,11 +15,11 @@ interpretation of results.
     weights of it belonging to either cluster.
  * **W.** A `m*k` matrix. Each column can be interpreted as a metasignature of a cluster.
 
-<center>![W*H approximates V][nmfimg]</center>
+->[![W*H approximates V][nmfimg]][nmf]<-
 
 Suppose we didn't know there were two clusters and we'd want a fully automatic
 way to identify the number of clusters and assign membership of each sample to
-a given cluster. We can run NMF with different values of k and evaluate the 
+a given cluster. We can run NMF with different values of `k` and evaluate the 
 cophenetic coefficient for each of them. It it expected to decline with more
 clusters added (with k increased), but it will show local maxima with a cluster
 number that fits the data well.
@@ -28,6 +28,8 @@ Ensuring code correctness and debugging
 ---------------------------------------
 
 **We are here to solve scientific problems, not write nice code**
+
+
 
  * not about how the code looks, but ensuring correctness
  * link some reproducibility issues
@@ -45,23 +47,33 @@ Optimising execution time
 
 **Computing time is cheap, so why bother making code run fast?**
 
- * large datasets: runtime increases mostly not linearly with sample size/number
- * might easily hit wall time of cluster
- * small modifications can easily yield 10x speed increase 
- * usually, only few steps are critical
- * packages often have compiled C/Fortran code in background
+Another point that is frequently raised is that as computing time is becoming a 
+commodity with modern hardware, it makes less and less sense to optimize code
+execution time. While this is generally true, there is also another force counteracting
+it: measurements get cheaper as well, and thus datasets get larger. R is for sure not
+a very performant language, but some constructs are exceptionally slow (e.g. the
+infamous `for` loops).
+
+ * When performing operations on large data sets, runtime does 
+     [often not linearly increase][bigo] with the size of the dataset and might easily
+     hit the wall time of a computing cluster.
+ * On the bright side, in most cases not all bits and pieces of code need to be 
+     optimized. It is often enough to identify critical inner loops and realize that
+     a 10x speedup in just that inner loop might well translate to almost the same
+     speedup for the whole program.
+
+One could also take the opposite point of view and argue that all high performance
+code should be written in a low-level language, such as C or Fortran. But then again,
+sanitizing IO, parallelizing execution, etc. are much easier done in a high level
+language such as R. Ideally, it should be a combination of both? Turns out it is already,
+with many packages implementing their core machinery in a compiled language that is
+then called by R.
+
  * links LAPACK/BLAS -> matrix ops are about as fast as it gets (if compiled with)
- * sanitizing input/output easier in R
- * parallisation easier here (parallel, BatchJobs; low-level threading is a pain)
+ * critical elements could be written in C
  * spending time in R vs C code: eg. for vs apply
- * have a couple examples: bad code, good code # no, move@solution
-   * for vs apply
-   * calculating something repeatedly in inner loop
-   * '+'(and other) reducing stuff
-   * special cases: expand.grid, outer
 
-
-**Finding bottlenecks with the profiler**
+**Using the profiler to find bottlenecks**
 
  * records how much time spent in different functions
  * example syntax+output
@@ -71,4 +83,5 @@ Optimising execution time
 [pca]: http://en.wikipedia.org/wiki/Principal_component_analysis
 [nmf]: http://en.wikipedia.org/wiki/Non-negative_matrix_factorization
 [nmfimg]: http://upload.wikimedia.org/wikipedia/commons/f/f9/NMF.png
+[bigo]: http://en.wikipedia.org/wiki/Big_O_notation
 
