@@ -1,8 +1,5 @@
 SOLUTION.md
 Rprof.out
-PCA_samples.png
-*.gct
 result.*
-.exectime
-util/.*
+.*
 

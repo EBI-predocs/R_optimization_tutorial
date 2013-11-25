@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
-nmfconsensus <- function(input.ds="100+100x50.gct", k.init=2, k.final=5, num.clusterings=3,
+nmfconsensus <- function(A, k.init=2, k.final=5, num.clusterings=3,
                          maxniter=1000, error.function='euclidean', rseed=123456789, 
                          stopconvergence = 40, stopfrequency = 10, doc.string="result", 
                          directory="") {
@@ -40,9 +40,6 @@ nmfconsensus <- function(input.ds="100+100x50.gct", k.init=2, k.final=5, num.clu
     }
     stopfreq <- as.integer(stopfrequency)
     stopconv <- as.integer(stopconvergence)
-
-    D <- read.gct(input.ds)
-    A <- data.matrix(D)
 
     # Threshold negative values to small quantity 
     eps <- .Machine$double.eps
@@ -153,7 +150,7 @@ nmfconsensus <- function(input.ds="100+100x50.gct", k.init=2, k.final=5, num.clu
     dev.off()
 
     xx <- cbind(k.vector, rho)
-    write(connect.matrix.ordered, file= file.path("util", ".cophenetic"))
+    write(connect.matrix.ordered, file=".cophenetic")
 }
 
 #####################################################################################
@@ -290,5 +287,71 @@ write.gct <- function (gct, filename)
     close(f)
     options(warn = 0)
     return(gct)
+}
+
+#####################################################################################
+#
+# Benchmarking code, ***DO NOT CHANGE THIS***
+#
+#####################################################################################
+run_nmf = function() {
+    if (! file.exists(".name")) {
+        name = readline("enter your name: ")
+        cat(name, "\n", file=".name")
+    }
+    else {
+        read.delim(".name", header=F)
+    }
+
+    num.genes=50
+    num.samples=100
+
+    library(OCplus)
+    set.seed(4621)
+    A = MAsim.smyth(ng=num.genes, n=num.samples, p0=0.2)
+    A = (A - min(A) + runif(1,0,1))/10
+    rownames(A) = c(1:dim(A)[1])
+    colnames(A) = c(1:dim(A)[2])
+
+    library(tools)
+    set.seed(7531)
+    V = matrix(rexp(16, rate=.1), ncol=4)
+    Bout = matrix.abs.plot(V, plot=F, transpose=F)
+    Bref = max(V) - V + min(V)
+    Bref = apply(Bref, 2, rev)
+    if (! all(Bout[[1]] == Bref)) {
+        stop("matrix.abs.plot() produces a different result than it should")
+    }
+
+    set.seed(6531)
+    res = NMF(V,3,50)
+    if (abs(sum(sample(c(res$W,res$H), 3) - c(0.5211503,5.6024402,17.9820890))) > 1e-4)
+        stop("NMF() produces a different result than it should")
+
+
+    if (! file.exists(".basetime")) { # run baseline benchmark
+        cat("Running baseline benchmark... this will take a minute or two\n")
+        runtime = system.time(nmfconsensus(A, 2, 5, 3, 500, 'euclidean'))
+
+        if (md5sum('.cophenetic') != "78fbfc339cd56f709459d2c2bfc25b95")
+            stop("You introduced an error somewhere, the result doesn't match the reference")
+
+        cat(as.double(runtime)[1], "\n", file=".basetime")
+        cat("\ndone in", as.double(runtime)[1], "seconds\n\n")
+    }
+    else { # run comparative benchmark
+        cat("\nRunning benchmark... this will take a minute or two\n")
+        runtime = system.time(nmfconsensus(A, 2, 5, 3, 500, 'euclidean'))
+
+        if (md5sum('.cophenetic') != "78fbfc339cd56f709459d2c2bfc25b95")
+            stop("You introduced an error somewhere, the result doesn't match the reference")
+
+        basetime = read.delim(".basetime", header=F)
+        runtime = as.double(runtime)[1]
+        cat(runtime, "\n", file=".runtime")
+        cat("Finished in ", runtime , "(", as.double(basetime)/runtime,"x speedup)\n")
+
+        # send comparative result
+    }
 }
 
