@@ -4,9 +4,22 @@ R optimization tutorial
 Your toy problem: NMF clustering
 --------------------------------
 
-<img src=http://upload.wikimedia.org/wikipedia/commons/f/f9/NMF.png>
+We will consider a measurement of two populations, with 100 samples and 50 data
+points each. They divide into two distinct clusters when applying e.g. [PCA][pca] to
+the dataset.
 
- * briefly explain what this is about
+ * **V.** Our data matrix with the data points in rows (k) and samples in columns (n)
+ * **H.** A k*n matrix
+ * **W.** A m*k matrix
+
+<center>![W*H approximates V][nmfimg]</center>
+
+Suppose we didn't know there were two clusters and we'd want a fully automatic
+way to identify the number of clusters and assign membership of each sample to
+a given cluster. We can run NMF with different values of k and evaluate the 
+cophenetic coefficient for each of them. It it expected to decline with more
+clusters added (with k increased), but it will show local maxima with a cluster
+number that fits the data well.
 
 Ensuring code correctness and debugging
 ---------------------------------------
@@ -51,4 +64,7 @@ Optimising execution time
  * example syntax+output
  * have one example from nmfconsensus already, to point out where it is and how to find it
  * this should explain what to type
+
+[pca]: http://en.wikipedia.org/wiki/Principal_component_analysis
+[nmfimg]: http://upload.wikimedia.org/wikipedia/commons/f/f9/NMF.png
 
