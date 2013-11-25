@@ -1,6 +1,13 @@
 R optimization tutorial
 =======================
 
+Your toy problem: NMF clustering
+--------------------------------
+
+<img src=http://upload.wikimedia.org/wikipedia/commons/f/f9/NMF.png>
+
+ * briefly explain what this is about
+
 Ensuring code correctness and debugging
 ---------------------------------------
 
@@ -14,6 +21,7 @@ Ensuring code correctness and debugging
 **Using the debugger**
  * debugging can help (and is better than print statements everywhere)
  * describe debugger in Rstudio/R
+ * this should be what to type
 
 
 Optimising execution time
@@ -25,17 +33,12 @@ Optimising execution time
  * might easily hit wall time of cluster
  * small modifications can easily yield 10x speed increase 
  * usually, only few steps are critical
-
-
-**But you can't do High Performance Computing in R. Or can you?**
-
  * packages often have compiled C/Fortran code in background
  * links LAPACK/BLAS -> matrix ops are about as fast as it gets (if compiled with)
  * sanitizing input/output easier in R
  * parallisation easier here (parallel, BatchJobs; low-level threading is a pain)
-
  * spending time in R vs C code: eg. for vs apply
- * have a couple examples: bad code, good code
+ * have a couple examples: bad code, good code # no, move@solution
    * for vs apply
    * calculating something repeatedly in inner loop
    * '+'(and other) reducing stuff
@@ -47,5 +50,5 @@ Optimising execution time
  * records how much time spent in different functions
  * example syntax+output
  * have one example from nmfconsensus already, to point out where it is and how to find it
-
+ * this should explain what to type
 
