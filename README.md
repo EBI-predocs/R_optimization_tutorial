@@ -6,11 +6,14 @@ Your toy problem: NMF clustering
 
 We will consider a measurement of two populations, with 100 samples and 50 data
 points each. They divide into two distinct clusters when applying e.g. [PCA][pca] to
-the dataset.
+the dataset. Our sample matrix `V` can then be approximated by matrices `W*H` that are
+strictly non-negative (i.e., [Non-negative matrix factorizatiion][nmf]), which eases 
+interpretation of results.
 
- * **V.** Our data matrix with the data points in rows (k) and samples in columns (n)
- * **H.** A k*n matrix
- * **W.** A m*k matrix
+ * **V.** Our data matrix with the data points in rows (`k`) and samples in columns (`n`)
+ * **H.** A `k*n` matrix. Each column can be interpreted as a sample and each row as
+    weights of it belonging to either cluster.
+ * **W.** A `m*k` matrix. Each column can be interpreted as a metasignature of a cluster.
 
 <center>![W*H approximates V][nmfimg]</center>
 
@@ -66,5 +69,6 @@ Optimising execution time
  * this should explain what to type
 
 [pca]: http://en.wikipedia.org/wiki/Principal_component_analysis
+[nmf]: http://en.wikipedia.org/wiki/Non-negative_matrix_factorization
 [nmfimg]: http://upload.wikimedia.org/wikipedia/commons/f/f9/NMF.png
 
