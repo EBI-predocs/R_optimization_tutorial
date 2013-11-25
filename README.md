@@ -7,7 +7,7 @@ Your toy problem: NMF clustering
 We will consider a measurement of two populations, with 100 samples and 50 data
 points each. They divide into two distinct clusters when applying e.g. [PCA][pca] to
 the dataset. Our sample matrix `V` can then be approximated by matrices `W*H` that are
-strictly non-negative (i.e., [Non-negative matrix factorizatiion][nmf]), which eases 
+strictly non-negative (i.e., [Non-negative matrix factorization][nmf]), which eases 
 interpretation of results.
 
  * **V.** Our data matrix with the data points in rows (`k`) and samples in columns (`n`)
@@ -81,10 +81,32 @@ then called by R.
 
 **Using the profiler to find bottlenecks**
 
- * records how much time spent in different functions
- * example syntax+output
- * have one example from nmfconsensus already, to point out where it is and how to find it
- * this should explain what to type
+ * `Rprof()` activates the profiler, `Rprof(NULL)` deactivates it
+ * You can view the output with `summaryRprof()`
+
+If we, for instance, activate the profiler and then run `runNMF()`, the output is similar
+to the following:
+
+```R
+> summaryRprof()
+$by.self
+                     self.time self.pct total.time total.pct
+"max"                    26.18    43.36      26.18     43.36
+"min"                    24.24    40.15      24.24     40.15
+"nmfconsensus"            2.42     4.01      60.28     99.83
+"%*%"                     1.74     2.88       1.74      2.88
+...
+
+$by.total
+                     total.time total.pct self.time self.pct
+"runNMF"                  60.36     99.97      0.00     0.00
+"system.time"             60.32     99.90      0.00     0.00
+"nmfconsensus"            60.28     99.83      2.42     4.01
+...
+```
+
+Where `$by.self` and `$by.total` are ordered by a function taking the maximum time by
+itself (`self.time`, former) or including all functions that were called from it (`total.time` latter).
 
 [pca]: http://en.wikipedia.org/wiki/Principal_component_analysis
 [nmf]: http://en.wikipedia.org/wiki/Non-negative_matrix_factorization
