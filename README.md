@@ -56,7 +56,7 @@ through the debugger. You can debug a function by calling `debug()` on it. In ou
 case, you will want to call `debug(nmfconsensus)` It will show the chunk of code 
 that is about to be executed. You can type in the following commands:
 
- * **<Enter> or n:** execute the next single statement
+ * **&lt;Enter&gt; or n:** execute the next single statement
  * **c:** execute the next block
  * **Q:** quit the debugger
 
@@ -102,6 +102,12 @@ then called by R.
      of `for`) most of the execution time can be spent in compiled code.
 
 **Using the profiler to find bottlenecks**
+
+When running your `runNMF()` function again, you will see that it now runs and produces
+the output PDF. However, it runs for quite a while. Try to improve the execution time.
+
+In case you do not know which functions are causing most of the execution time, you
+can run a profiler to figure that out. Use the commands below and the run your script again.
 
  * `Rprof()` activates the profiler, `Rprof(NULL)` deactivates it. Output is stored
      in the file `Rprof.out`.
