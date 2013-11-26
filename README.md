@@ -27,15 +27,6 @@ number that fits the data well.
 Ensuring code correctness and debugging
 ---------------------------------------
 
-**We are here to solve scientific problems, not write nice code**
-
- * not about how the code looks, but ensuring correctness
- * link some reproducibility issues
- * testing code
- * why optimise this function
-
-**Using the debugger**
-
 Try to run your NMF clustering script, either by typing
 
 ```R
@@ -50,6 +41,27 @@ from within R or by calling it from the command line
 ```
 
 You will realize that it throws an error. Try to spot and correct it.
+
+**Correcting errors is fine, but we're in science and not software engineering**
+
+An argument that is often used is that "science is about new findings, not writing 
+nice code" and "if my script produces the right output, this is good enough". People 
+who say that are missing the point, really. Writing segmented and testable code is 
+*not* about how it looks but about ensuring correctness. After all, how do you know
+your code is doing the right thing as opposed to giving you the output *you want*.
+
+TODO: link some reproducibility issues
+
+ * Don't worry too much when doing exploratory analyses. Those are there to give
+     you ideas what your data *might* contain. But *do* test your code when you 
+     confirm a hypothesis.
+ * Writing testable code is about splitting your functionality into segments that
+     are simple enough so you know the right output for a given input. All that's
+     left to do is write a separate test script that makes sure that makes sure 
+     of that. Also, `stopifnot()` statements are useful to make sure assumptions 
+     you make about your variables are correct.
+
+**Using the debugger**
 
 If there is an error you can not spot right away, it makes sense to run your code 
 through the debugger. You can debug a function by calling `debug()` on it. In our
@@ -66,6 +78,9 @@ standard R session If you no longer want to use the debugger you can either call
 
 Optimising execution time
 -------------------------
+
+When running your `runNMF()` function again, you will see that it now runs and produces
+the output PDF. However, it runs for quite a while. Try to improve the execution time.
 
 **Computing time is cheap, so why bother making code run fast?**
 
@@ -102,9 +117,6 @@ then called by R.
      of `for`) most of the execution time can be spent in compiled code.
 
 **Using the profiler to find bottlenecks**
-
-When running your `runNMF()` function again, you will see that it now runs and produces
-the output PDF. However, it runs for quite a while. Try to improve the execution time.
 
 In case you do not know which functions are causing most of the execution time, you
 can run a profiler to figure that out. Use the commands below and the run your script again.
