@@ -48,9 +48,9 @@ An argument that is often used is that "science is about new findings, not writi
 nice code" and "if my script produces the right output, this is good enough". People 
 who say that are missing the point, really. Writing segmented and testable code is 
 *not* about how it looks but about ensuring correctness. After all, how do you know
-your code is doing the right thing as opposed to giving you the output *you want*.
+your code is [doing the right thing][natreproc] as opposed to giving you the output 
+*you want*.
 
-TODO: link some reproducibility issues
 
  * Don't worry too much when doing exploratory analyses. Those are there to give
      you ideas what your data *might* contain. But *do* test your code when you 
@@ -155,6 +155,7 @@ bottleneck by means of execution time.
 [pca]: http://en.wikipedia.org/wiki/Principal_component_analysis
 [nmf]: http://en.wikipedia.org/wiki/Non-negative_matrix_factorization
 [nmfimg]: http://upload.wikimedia.org/wikipedia/commons/f/f9/NMF.png
+[natreproc]: http://www.nature.com/nature/journal/v470/n7334/full/470305b.html
 [bigo]: http://en.wikipedia.org/wiki/Big_O_notation
 [rcompile]: https://projects.archlinux.org/svntogit/packages.git/tree/trunk/PKGBUILD?h=packages/r
 [lapack]: http://en.wikipedia.org/wiki/LAPACK
