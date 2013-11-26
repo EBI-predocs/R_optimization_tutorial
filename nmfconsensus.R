@@ -33,7 +33,7 @@ nmfconsensus <- function(A, k.init=2, k.final=5, num.clusterings=3,
     k.init<-as.integer(k.init)
     k.final<-as.integer(k.final)
     num.clusterings<-as.integer(num.clusterings)
-    n.iter<-as.integer(maxniter)
+    maxniter<-as.integer(maxniter)
     if (!is.na(rseed)) {
         seed <- as.integer(rseed)
         set.seed(seed)
@@ -53,14 +53,14 @@ nmfconsensus <- function(A, k.init=2, k.final=5, num.clusterings=3,
     rho <- vector(mode = "numeric", length = num.k)
     k.vector <- vector(mode = "numeric", length = num.k)
 
-    k.index <- 1
+    k.index <- "1"
     connect.matrix.ordered <- array(0, c(num.k, cols, cols))
 
     for (k in k.init:k.final) {
         assign <- matrix(0, nrow = num.clusterings, ncol = cols)
 
         for (i in 1:num.clusterings) {
-            NMF.out <- NMF(V = A, k = k, maxniter = n.iter, seed = seed + i, 
+            NMF.out <- NMF(V = A, k = k, maxniter = maxniter, seed = seed + i, 
                            stopconv = stopconv, stopfreq = stopfreq)
 
             for (j in 1:cols) { # Find membership
