@@ -29,7 +29,7 @@ Ensuring code correctness and debugging
 
 Try to run your NMF clustering script, either by typing
 
-```R
+```r
 source("nmfconsensus.R")
 runNMF()
 ```
@@ -129,7 +129,7 @@ can run a profiler to figure that out. Use the commands below and the run your s
 If we, for instance, activate the profiler and then run `runNMF()`, the output is similar
 to the following:
 
-```R
+```r
 > summaryRprof()
 $by.self
                      self.time self.pct total.time total.pct
