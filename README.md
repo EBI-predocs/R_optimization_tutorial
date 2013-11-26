@@ -15,7 +15,7 @@ interpretation of results.
     weights of it belonging to either cluster.
  * **W.** A `m*k` matrix. Each column can be interpreted as a metasignature of a cluster.
 
-->[![W*H approximates V][nmfimg]][nmf]<-
+[![W*H approximates V][nmfimg]][nmf]
 
 Suppose we didn't know there were two clusters and we'd want a fully automatic
 way to identify the number of clusters and assign membership of each sample to
@@ -29,18 +29,40 @@ Ensuring code correctness and debugging
 
 **We are here to solve scientific problems, not write nice code**
 
-
-
  * not about how the code looks, but ensuring correctness
  * link some reproducibility issues
  * testing code
-
+ * why optimise this function
 
 **Using the debugger**
- * debugging can help (and is better than print statements everywhere)
- * describe debugger in Rstudio/R
- * this should be what to type
 
+Try to run your NMF clustering script, either by typing
+
+```R
+source("nmfconsensus.R")
+runNMF()
+```
+
+from within R or by calling it from the command line
+
+```bash
+./nmfconsensus.R
+```
+
+You will realize that it throws an error. Try to spot and correct it.
+
+If there is an error you can not spot right away, it makes sense to run your code 
+through the debugger. You can debug a function by calling `debug()` on it. In our
+case, you will want to call `debug(nmfconsensus)` It will show the chunk of code 
+that is about to be executed. You can type in the following commands:
+
+ * **<Enter> or n:** execute the next single statement
+ * **c:** execute the next block
+ * **Q:** quit the debugger
+
+During debugging, you can inspect variables and modify them as if you were in a 
+standard R session If you no longer want to use the debugger you can either call
+`undebug()` on your function or just `source()` your script file again.
 
 Optimising execution time
 -------------------------
@@ -81,8 +103,10 @@ then called by R.
 
 **Using the profiler to find bottlenecks**
 
- * `Rprof()` activates the profiler, `Rprof(NULL)` deactivates it
- * You can view the output with `summaryRprof()`
+ * `Rprof()` activates the profiler, `Rprof(NULL)` deactivates it. Output is stored
+     in the file `Rprof.out`.
+ * You can view the output with `summaryRprof()`, but you might need to `library(tools)` 
+     first.
 
 If we, for instance, activate the profiler and then run `runNMF()`, the output is similar
 to the following:
@@ -106,7 +130,9 @@ $by.total
 ```
 
 Where `$by.self` and `$by.total` are ordered by a function taking the maximum time by
-itself (`self.time`, former) or including all functions that were called from it (`total.time` latter).
+itself (`self.time`, former) or including all functions that were called from it (`total.
+time`, latter). With this information you can figure out which part of your code is the
+bottleneck by means of execution time.
 
 [pca]: http://en.wikipedia.org/wiki/Principal_component_analysis
 [nmf]: http://en.wikipedia.org/wiki/Non-negative_matrix_factorization
