@@ -1,6 +1,18 @@
 R optimization tutorial
 =======================
 
+This tutorial will show you how to debug and vectorize R code. The concepts are 
+applicable to other languages, such as Matlab or Python.
+
+Two libraries are required to run the examples: `OCplus` and `RCurl`. You can install
+them by typing the following commands:
+
+```r
+install.packages('RCurl')
+source("http://bioconductor.org/biocLite.R")
+biocLite("OCplus")
+```
+
 Your toy problem: NMF clustering
 --------------------------------
 
