@@ -54,7 +54,7 @@ from within R or by calling it from the command line
 
 You will realize that it throws an error. Try to spot and correct it.
 
-**Correcting errors is fine, but is it sufficient?**
+**Correcting errors is fine, but why should I optimize my code when it works?**
 
 An argument that is often used is that "science is about new findings, not writing 
 nice code" and "if my script produces the right output, this is good enough". People 
