@@ -166,7 +166,7 @@ bottleneck by means of execution time.
 Follow ups
 ----------
 
-Advanced R programming: [http://adv-r.had.co.nz/][http://adv-r.had.co.nz/]
+Advanced R programming: http://adv-r.had.co.nz/
 
 [pca]: http://en.wikipedia.org/wiki/Principal_component_analysis
 [nmf]: http://en.wikipedia.org/wiki/Non-negative_matrix_factorization
