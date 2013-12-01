@@ -93,6 +93,42 @@ Optimising execution time
 When running your `runNMF()` function again, you will see that it now runs and produces
 the output PDF. However, it runs for quite a while. Try to improve the execution time.
 
+**Using the profiler to find bottlenecks**
+
+In case you do not know which functions are causing most of the execution time, you
+can run a profiler to figure that out. Use the commands below and the run your script again.
+
+ * `Rprof()` activates the profiler, `Rprof(NULL)` deactivates it. Output is stored
+     in the file `Rprof.out`.
+ * You can view the output with `summaryRprof()`, but you might need to `library(tools)` 
+     first.
+
+If we, for instance, activate the profiler and then run `runNMF()`, the output is similar
+to the following:
+
+```r
+> summaryRprof()
+$by.self
+                     self.time self.pct total.time total.pct
+"max"                    26.18    43.36      26.18     43.36
+"min"                    24.24    40.15      24.24     40.15
+"nmfconsensus"            2.42     4.01      60.28     99.83
+"%*%"                     1.74     2.88       1.74      2.88
+...
+
+$by.total
+                     total.time total.pct self.time self.pct
+"runNMF"                  60.36     99.97      0.00     0.00
+"system.time"             60.32     99.90      0.00     0.00
+"nmfconsensus"            60.28     99.83      2.42     4.01
+...
+```
+
+Where `$by.self` and `$by.total` are ordered by a function taking the maximum time by
+itself (`self.time`, former) or including all functions that were called from it 
+(`total.time`, latter). With this information you can figure out which part of your 
+code is the bottleneck by means of execution time.
+
 **Computing time is cheap, so why bother making code run fast?**
 
 Another point that is frequently raised is that as computing time is becoming a 
@@ -126,42 +162,6 @@ then called by R.
      [C, Fortran][dynload] or [C++][rcpp] library and then called from R. By moving those
      chunks to a compiled language (which means, in the easiest case, using `apply` instead
      of `for`) most of the execution time can be spent in compiled code.
-
-**Using the profiler to find bottlenecks**
-
-In case you do not know which functions are causing most of the execution time, you
-can run a profiler to figure that out. Use the commands below and the run your script again.
-
- * `Rprof()` activates the profiler, `Rprof(NULL)` deactivates it. Output is stored
-     in the file `Rprof.out`.
- * You can view the output with `summaryRprof()`, but you might need to `library(tools)` 
-     first.
-
-If we, for instance, activate the profiler and then run `runNMF()`, the output is similar
-to the following:
-
-```r
-> summaryRprof()
-$by.self
-                     self.time self.pct total.time total.pct
-"max"                    26.18    43.36      26.18     43.36
-"min"                    24.24    40.15      24.24     40.15
-"nmfconsensus"            2.42     4.01      60.28     99.83
-"%*%"                     1.74     2.88       1.74      2.88
-...
-
-$by.total
-                     total.time total.pct self.time self.pct
-"runNMF"                  60.36     99.97      0.00     0.00
-"system.time"             60.32     99.90      0.00     0.00
-"nmfconsensus"            60.28     99.83      2.42     4.01
-...
-```
-
-Where `$by.self` and `$by.total` are ordered by a function taking the maximum time by
-itself (`self.time`, former) or including all functions that were called from it (`total.
-time`, latter). With this information you can figure out which part of your code is the
-bottleneck by means of execution time.
 
 Follow ups
 ----------
