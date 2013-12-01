@@ -54,25 +54,6 @@ from within R or by calling it from the command line
 
 You will realize that it throws an error. Try to spot and correct it.
 
-**Correcting errors is fine, but why should I optimize my code when it works?**
-
-An argument that is often used is that "science is about new findings, not writing 
-nice code" and "if my script produces the right output, this is good enough". People 
-who say that are missing the point, really. Writing segmented and testable code is 
-*not* about how it looks but about ensuring correctness. After all, how do you know
-your code is [doing the right thing][natreproc] as opposed to giving you the output 
-*you want*.
-
-
- * Don't worry too much when doing exploratory analyses. Those are there to give
-     you ideas what your data *might* contain. But *do* test your code when you 
-     confirm a hypothesis.
- * Writing testable code is about splitting your functionality into segments that
-     are simple enough so you know the right output for a given input. All that's
-     left to do is write a separate test script that makes sure that makes sure 
-     of that. Also, `stopifnot()` statements are useful to make sure assumptions 
-     you make about your variables are correct.
-
 **Using the debugger**
 
 If there is an error you can not spot right away, it makes sense to run your code 
@@ -87,6 +68,24 @@ that is about to be executed. You can type in the following commands:
 During debugging, you can inspect variables and modify them as if you were in a 
 standard R session If you no longer want to use the debugger you can either call
 `undebug()` on your function or just `source()` your script file again.
+
+**Correcting errors is fine, but why should I optimize my code when it works?**
+
+An argument that is often used is that "science is about new findings, not writing 
+nice code" and "if my script produces the right output, this is good enough". People 
+who say that are missing the point, really. Writing segmented and testable code is 
+*not* about how it looks but about ensuring correctness. After all, how do you know
+your code is [doing the right thing][natreproc] as opposed to giving you the output 
+*you want*.
+
+ * Don't worry too much when doing exploratory analyses. Those are there to give
+     you ideas what your data *might* contain. But *do* test your code when you 
+     confirm a hypothesis.
+ * Writing testable code is about splitting your functionality into segments that
+     are simple enough so you know the right output for a given input. All that's
+     left to do is write a separate test script that makes sure that makes sure 
+     of that. Also, `stopifnot()` statements are useful to make sure assumptions 
+     you make about your variables are correct.
 
 Optimising execution time
 -------------------------
@@ -163,6 +162,11 @@ Where `$by.self` and `$by.total` are ordered by a function taking the maximum ti
 itself (`self.time`, former) or including all functions that were called from it (`total.
 time`, latter). With this information you can figure out which part of your code is the
 bottleneck by means of execution time.
+
+Follow ups
+----------
+
+Advanced R programming: [http://adv-r.had.co.nz/][http://adv-r.had.co.nz/]
 
 [pca]: http://en.wikipedia.org/wiki/Principal_component_analysis
 [nmf]: http://en.wikipedia.org/wiki/Non-negative_matrix_factorization
