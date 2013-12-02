@@ -167,7 +167,7 @@ Follow ups
 ----------
 
 Advanced R programming: http://adv-r.had.co.nz/
-BLAS/LAPACK support: http://lostingeospace.blogspot.co.uk/2012/06/r-and-hpc-blas-mpi-in-linux-environment.html
+R + BLAS/LAPACK: http://lostingeospace.blogspot.co.uk/2012/06/r-and-hpc-blas-mpi-in-linux-environment.html
 
 [pca]: http://en.wikipedia.org/wiki/Principal_component_analysis
 [nmf]: http://en.wikipedia.org/wiki/Non-negative_matrix_factorization
