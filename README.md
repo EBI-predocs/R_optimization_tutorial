@@ -168,6 +168,7 @@ Follow ups
 
  * Advanced R programming: http://adv-r.had.co.nz/
  * BLAS and LAPACK support for R: http://lostingeospace.blogspot.co.uk/2012/06/r-and-hpc-blas-mpi-in-linux-environment.html
+ * The BatchJobs R library to run parallel tasks either locally, multithreaded, or on LSF: https://github.com/tudo-r/BatchJobs
 
 [pca]: http://en.wikipedia.org/wiki/Principal_component_analysis
 [nmf]: http://en.wikipedia.org/wiki/Non-negative_matrix_factorization
