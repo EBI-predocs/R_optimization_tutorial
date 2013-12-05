@@ -7,7 +7,7 @@ applicable to other languages, such as Matlab or Python.
 Two libraries are required to run the examples: `OCplus` and `RCurl`. You can install
 them by typing the following commands:
 
-```r
+```splus
 install.packages('RCurl')
 source("http://bioconductor.org/biocLite.R")
 biocLite("OCplus")
@@ -41,7 +41,7 @@ Ensuring code correctness and debugging
 
 Try to run your NMF clustering script, either by typing
 
-```r
+```splus
 source("nmfconsensus.R")
 runNMF()
 ```
@@ -106,7 +106,7 @@ can run a profiler to figure that out. Use the commands below and the run your s
 If we, for instance, activate the profiler and then run `runNMF()`, the output is similar
 to the following:
 
-```r
+```splus
 > summaryRprof()
 $by.self
                      self.time self.pct total.time total.pct
