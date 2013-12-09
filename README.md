@@ -7,7 +7,7 @@ applicable to other languages, such as Matlab or Python.
 Two libraries are required to run the examples: `OCplus` and `RCurl`. You can install
 them by typing the following commands:
 
-```r
+```splus
 install.packages('RCurl')
 source("http://bioconductor.org/biocLite.R")
 biocLite("OCplus")
@@ -41,7 +41,7 @@ Ensuring code correctness and debugging
 
 Try to run your NMF clustering script, either by typing
 
-```r
+```splus
 source("nmfconsensus.R")
 runNMF()
 ```
@@ -52,14 +52,16 @@ from within R or by calling it from the command line
 ./nmfconsensus.R
 ```
 
-You will realize that it throws an error. Try to spot and correct it.
+You will realize that it throws an error. Try to spot and correct it. You can get 
+get a quick overview of the context with `traceback()`.
 
 **Using the debugger**
 
 If there is an error you can not spot right away, it makes sense to run your code 
 through the debugger. You can debug a function by calling `debug()` on it. In our
-case, you will want to call `debug(nmfconsensus)` It will show the chunk of code 
-that is about to be executed. You can type in the following commands:
+case, you will want to call `debug(nmfconsensus)` and then the function again. It 
+will show the chunk of code that is about to be executed. Within the debugger, you 
+can type in the following commands:
 
  * **&lt;Enter&gt; or n:** execute the next single statement
  * **c:** execute the next block
@@ -106,7 +108,7 @@ can run a profiler to figure that out. Use the commands below and the run your s
 If we, for instance, activate the profiler and then run `runNMF()`, the output is similar
 to the following:
 
-```r
+```splus
 > summaryRprof()
 $by.self
                      self.time self.pct total.time total.pct
@@ -168,6 +170,7 @@ Follow ups
 
  * Advanced R programming: http://adv-r.had.co.nz/
  * BLAS and LAPACK support for R: http://lostingeospace.blogspot.co.uk/2012/06/r-and-hpc-blas-mpi-in-linux-environment.html
+ * The BatchJobs R library to run parallel tasks either locally, multithreaded, or on LSF: https://github.com/tudo-r/BatchJobs
 
 [pca]: http://en.wikipedia.org/wiki/Principal_component_analysis
 [nmf]: http://en.wikipedia.org/wiki/Non-negative_matrix_factorization
