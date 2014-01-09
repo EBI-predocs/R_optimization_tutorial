@@ -63,18 +63,18 @@ debug(nmfconsensus)    # use the debugger for the "nmfconsensus" function
 runNMF()               # run the code again
 ```
 
-It will show the chunk of code that is about to be executed. Within the debugger, 
-you can type in the following commands:
+The debugger will show the chunk of code that is about to be executed. Within the 
+debugger, you can type in the following commands:
 
  * **&lt;Enter&gt; or n:** execute the next single statement
  * **c:** execute the next block
  * **Q:** quit the debugger
 
 Use the `Enter` key to step through the statements and hit `c` if you get stuck
-in a long loop. During debugging, you can inspect variables and modify them as if 
-you were in a standard R session.
+in a long loop (twice for nested loops). During debugging, you can inspect variables 
+and modify them as if you were in a standard R session.
 
-If you no longer want to use the debugger you can quit it and then either call
+If you no longer want to use the debugger you can quit it with `Q` and then either call
 `undebug()` on your function or just `source()` your script file again.
 
 **Correcting errors is fine, but why should I optimize my code when it works?**
