@@ -14,7 +14,7 @@ function show_scores() {
 
     # write array to file
     $handle = fopen("scores.php","w");
-    $string = '$scores = ' . var_export($scores,true) . ';';
+    $string = "<?php\n\$scores = " . var_export($scores,true) . ";\n?>";
     fwrite($handle,$string);
     fclose($handle);
 

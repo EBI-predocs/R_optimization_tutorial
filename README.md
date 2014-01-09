@@ -39,17 +39,11 @@ number that fits the data well.
 Ensuring code correctness and debugging
 ---------------------------------------
 
-Try to run your NMF clustering script, either by typing
+Try to run your NMF clustering script by typing in R:
 
 ```splus
 source("nmfconsensus.R")
 runNMF()
-```
-
-from within R or by calling it from the command line
-
-```bash
-./nmfconsensus.R
 ```
 
 You will realize that it throws an error. Try to spot and correct it. You can get 

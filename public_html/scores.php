@@ -1,2 +1,4 @@
+<?
 $scores = array (
 );
+?>
