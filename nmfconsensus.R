@@ -337,12 +337,11 @@ runNMF = function() {
         stop("You introduced an error somewhere, the result doesn't match the reference")
 
     runtime = as.double(runtime)[1]
-    cat(runtime, "\n", file=".runtime")
     cat("Finished in ", runtime , "s\n")
 
     library(RCurl) # post results
     invisible(postForm("http://www.ebi.ac.uk/~schubert/ropt/index.php", name=name, 
-                       score=as.character(as.double(runtime))))
+                       score=as.character(runtime)))
 }
 
 if (! interactive()) {
