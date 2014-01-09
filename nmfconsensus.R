@@ -330,35 +330,18 @@ runNMF = function() {
     if (abs(sum(sample(c(res$W,res$H), 3) - c(0.5211503,5.6024402,17.9820890))) > 1e-4)
         stop("NMF() produces a different result than it should")
 
+    cat("\nRunning benchmark... this will take a minute or two\n")
+    runtime = system.time(nmfconsensus(A, 2, 5, 3, 500, 'euclidean'))
 
-    if (! file.exists(".basetime")) { # run baseline benchmark
-        cat("Running baseline benchmark... this will take a minute or two\n")
-        runtime = system.time(nmfconsensus(A, 2, 5, 3, 500, 'euclidean'))
-        runtime = as.double(runtime)[1]
+    if (md5sum('.cophenetic') != "78fbfc339cd56f709459d2c2bfc25b95")
+        stop("You introduced an error somewhere, the result doesn't match the reference")
 
-        if (md5sum('.cophenetic') != "78fbfc339cd56f709459d2c2bfc25b95")
-            stop("You introduced an error somewhere, the result doesn't match the reference")
-
-        cat(runtime, "\n", file=".basetime")
-        cat("\ndone in", runtime, "seconds\n\n")
-        basetime = runtime
-    }
-    else { # run comparative benchmark
-        cat("\nRunning benchmark... this will take a minute or two\n")
-        runtime = system.time(nmfconsensus(A, 2, 5, 3, 500, 'euclidean'))
-
-        if (md5sum('.cophenetic') != "78fbfc339cd56f709459d2c2bfc25b95")
-            stop("You introduced an error somewhere, the result doesn't match the reference")
-
-        basetime = read.delim(".basetime", header=F)
-        runtime = as.double(runtime)[1]
-        cat(runtime, "\n", file=".runtime")
-        cat("Finished in ", runtime , "(", as.double(basetime)/runtime,"x speedup)\n")
-    }
+    runtime = as.double(runtime)[1]
+    cat("Finished in ", runtime , "s\n")
 
     library(RCurl) # post results
-    invisible(postForm("http://www.ebi.ac.uk/~schubert/scoreboard.php", name=name, 
-                       score=as.character(as.double(basetime)/as.double(runtime))))
+    invisible(postForm("http://www.ebi.ac.uk/~schubert/ropt/index.php", name=name, 
+                       score=as.character(runtime)))
 }
 
 if (! interactive()) {

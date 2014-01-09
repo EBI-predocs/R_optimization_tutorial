@@ -39,36 +39,42 @@ number that fits the data well.
 Ensuring code correctness and debugging
 ---------------------------------------
 
-Try to run your NMF clustering script, either by typing
+Try to run your NMF clustering script by typing in R:
 
 ```splus
 source("nmfconsensus.R")
 runNMF()
 ```
 
-from within R or by calling it from the command line
-
-```bash
-./nmfconsensus.R
-```
-
-You will realize that it throws an error. Try to spot and correct it. You can get 
-get a quick overview of the context with `traceback()`.
+Enter your name (or any name that you recognize) so you can see how your runtime
+compares to other approaches later. You will realize that the script throws an 
+error. Try to spot and correct it. You can get get a quick overview of the context 
+with `traceback()`.
 
 **Using the debugger**
 
 If there is an error you can not spot right away, it makes sense to run your code 
 through the debugger. You can debug a function by calling `debug()` on it. In our
-case, you will want to call `debug(nmfconsensus)` and then the function again. It 
-will show the chunk of code that is about to be executed. Within the debugger, you 
-can type in the following commands:
+case, you will want to call 
+
+```splus
+options(error=recover) # if there is an error, don't just quit
+debug(nmfconsensus)    # use the debugger for the "nmfconsensus" function
+runNMF()               # run the code again
+```
+
+The debugger will show the chunk of code that is about to be executed. Within the 
+debugger, you can type in the following commands:
 
  * **&lt;Enter&gt; or n:** execute the next single statement
  * **c:** execute the next block
  * **Q:** quit the debugger
 
-During debugging, you can inspect variables and modify them as if you were in a 
-standard R session If you no longer want to use the debugger you can either call
+Use the `Enter` key to step through the statements and hit `c` if you get stuck
+in a long loop (twice for nested loops). During debugging, you can inspect variables 
+and modify them as if you were in a standard R session.
+
+If you no longer want to use the debugger you can quit it with `Q` and then either call
 `undebug()` on your function or just `source()` your script file again.
 
 **Correcting errors is fine, but why should I optimize my code when it works?**
@@ -93,7 +99,13 @@ Optimising execution time
 -------------------------
 
 When running your `runNMF()` function again, you will see that it now runs and produces
-the output PDF. However, it runs for quite a while. Try to improve the execution time.
+the output PDF. Have a look at it. It contains a PCA of our two sample populations, the
+four clusterings it attempted and the cophenetic coefficient (describing goodness of fit)
+for each one. Favourable `k`s have local maxima on the cophenetic plot, and the only one
+we have got is two - this agrees well with the PCA results.
+
+You will also have realized that the script ran for quite a while. Try to improve the 
+execution time, either by hand or with the profiler.
 
 **Using the profiler to find bottlenecks**
 
@@ -145,7 +157,7 @@ infamous `for` loops).
      hit the wall time of a computing cluster.
  * On the bright side, in most cases not all bits and pieces of code need to be 
      optimized. It is often enough to identify critical inner loops and realize that
-     a 10x speedup in just that inner loop might well translate to almost the same
+     a 10 x speedup in just that inner loop might well translate to almost the same
      speedup for the whole program.
 
 One could also take the opposite point of view and argue that all high performance
