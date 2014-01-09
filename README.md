@@ -46,6 +46,9 @@ source("nmfconsensus.R")
 runNMF()
 ```
 
+Enter your name (or any name that you recognize) so you can see how your runtime
+compares to other approaches later.
+
 You will realize that it throws an error. Try to spot and correct it. You can get 
 get a quick overview of the context with `traceback()`.
 
@@ -53,9 +56,16 @@ get a quick overview of the context with `traceback()`.
 
 If there is an error you can not spot right away, it makes sense to run your code 
 through the debugger. You can debug a function by calling `debug()` on it. In our
-case, you will want to call `debug(nmfconsensus)` and then the function again. It 
-will show the chunk of code that is about to be executed. Within the debugger, you 
-can type in the following commands:
+case, you will want to call 
+
+```splus
+options(error=recover) # if there is an error, don't just quit
+debug(nmfconsensus) # use the debugger for this function
+runNMF()
+```
+
+It will show the chunk of code that is about to be executed. Within the debugger, 
+you can type in the following commands:
 
  * **&lt;Enter&gt; or n:** execute the next single statement
  * **c:** execute the next block
