@@ -47,10 +47,9 @@ runNMF()
 ```
 
 Enter your name (or any name that you recognize) so you can see how your runtime
-compares to other approaches later.
-
-You will realize that it throws an error. Try to spot and correct it. You can get 
-get a quick overview of the context with `traceback()`.
+compares to other approaches later. You will realize that the script throws an 
+error. Try to spot and correct it. You can get get a quick overview of the context 
+with `traceback()`.
 
 **Using the debugger**
 
@@ -60,8 +59,8 @@ case, you will want to call
 
 ```splus
 options(error=recover) # if there is an error, don't just quit
-debug(nmfconsensus) # use the debugger for this function
-runNMF()
+debug(nmfconsensus)    # use the debugger for the "nmfconsensus" function
+runNMF()               # run the code again
 ```
 
 It will show the chunk of code that is about to be executed. Within the debugger, 
