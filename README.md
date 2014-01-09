@@ -99,7 +99,13 @@ Optimising execution time
 -------------------------
 
 When running your `runNMF()` function again, you will see that it now runs and produces
-the output PDF. However, it runs for quite a while. Try to improve the execution time.
+the output PDF. Have a look at it. It contains a PCA of our two sample populations, the
+four clusterings it attempted and the cophenetic coefficient (describing goodness of fit)
+for each one. Favourable `k`s have local maxima on the cophenetic plot, and the only one
+we have got is two - this agrees well with the PCA results.
+
+You will also have realized that the script ran for quite a while. Try to improve the 
+execution time, either by hand or with the profiler.
 
 **Using the profiler to find bottlenecks**
 
@@ -151,7 +157,7 @@ infamous `for` loops).
      hit the wall time of a computing cluster.
  * On the bright side, in most cases not all bits and pieces of code need to be 
      optimized. It is often enough to identify critical inner loops and realize that
-     a 10x speedup in just that inner loop might well translate to almost the same
+     a 10 x speedup in just that inner loop might well translate to almost the same
      speedup for the whole program.
 
 One could also take the opposite point of view and argue that all high performance
