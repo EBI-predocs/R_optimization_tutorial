@@ -1,7 +1,7 @@
 <?php
 function show_scores() {
     # read array from file
-    echo '<table><tr><th>Name</th><th>Speedup achieved</th></tr>';
+    echo '<table><tr><th>Name</th><th>Runtime (CPU seconds)</th></tr>';
     include("scores.php");
 
     # update array with post request
@@ -10,17 +10,17 @@ function show_scores() {
         $score = htmlspecialchars($_POST["score"]);
         $scores[$name] = $score;
     }
-    arsort($scores);
+    asort($scores);
 
     # write array to file
     $handle = fopen("scores.php","w");
-    $string = "<?php\n\$scores = " . var_export($scores,true) . ";\n?>";
-    fwrite($handle,$string);
+    $string = '<?php $scores = ' . var_export($scores,true) . ';?>';
+    fwrite($handle, $string);
     fclose($handle);
 
     # display table
     foreach($scores as $key=>$value) {
-        echo '<tr><td>' . $key . '</td><td>' . number_format($value,2) . ' x</td></tr>';
+        echo '<tr><td>' . $key . '</td><td>' . number_format($value,2) . '</td></tr>';
     }
     echo '</table>';
 
@@ -126,7 +126,8 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 -->
   
   <div class="content">
-  <? include('workshop2013/inc/header.php'); ?> 
+  <h1>R script runtime table</h1>
+  <!--<h2 class="strapline">November 26th to 29th 2013</h2>-->
   </div>
 
             </div>
@@ -161,7 +162,16 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 
 
 
+<div class="panel-pane pane-custom pane-1 intro clearfix" >
+<p class="intro">
+Below is a table of runtimes automatically submitted by the R script.
+</p>
+</div>
+
+<div class="panel-pane pane-custom pane-2 clearfix" >
 <?php show_scores(); ?>
+</div>
+
 
 
 </div>
