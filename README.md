@@ -61,8 +61,11 @@ can type in the following commands:
  * **c:** execute the next block
  * **Q:** quit the debugger
 
-During debugging, you can inspect variables and modify them as if you were in a 
-standard R session If you no longer want to use the debugger you can either call
+Use the `Enter` key to step through the statements and hit `c` if you get stuck
+in a long loop. During debugging, you can inspect variables and modify them as if 
+you were in a standard R session.
+
+If you no longer want to use the debugger you can quit it and then either call
 `undebug()` on your function or just `source()` your script file again.
 
 **Correcting errors is fine, but why should I optimize my code when it works?**
