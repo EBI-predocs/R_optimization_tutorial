@@ -79,20 +79,19 @@ If you no longer want to use the debugger you can quit it with `Q` and then eith
 
 **Correcting errors is fine, but why should I optimize my code when it works?**
 
-An argument that is often used is that "science is about new findings, not writing 
-nice code" and "if my script produces the right output, this is good enough". People 
+An argument that is often used is that *"science is about new findings, not writing 
+nice code"* and *"if my script produces the right output, this is good enough"*. People 
 who say that are missing the point, really. Writing segmented and testable code is 
 *not* about how it looks but about ensuring correctness. After all, how do you know
 your code is [doing the right thing][natreproc] as opposed to giving you the output 
 *you want*.
 
  * Don't worry too much when doing exploratory analyses. Those are there to give
-     you ideas what your data *might* contain. But *do* test your code when you 
-     confirm a hypothesis.
- * Writing testable code is about splitting your functionality into segments that
-     are simple enough so you know the right output for a given input. All that's
-     left to do is write a separate test script that makes sure that makes sure 
-     of that. Also, `stopifnot()` statements are useful to make sure assumptions 
+     you ideas what your data *might* contain.
+ * Writing test- and debuggable code is about splitting your functionality into segments that
+     are simple enough so you know the right output for a given input. If you use a
+     function more often, you can write a separate test script that makes sure that makes sure 
+     of that. `stopifnot()` statements are also useful to make sure assumptions 
      you make about your variables are correct.
 
 Optimising execution time
@@ -155,10 +154,10 @@ infamous `for` loops).
  * When performing operations on large data sets, runtime does 
      [often not linearly increase][bigo] with the size of the dataset and might easily
      hit the wall time of a computing cluster.
- * On the bright side, in most cases not all bits and pieces of code need to be 
-     optimized. It is often enough to identify critical inner loops and realize that
-     a 10 x speedup in just that inner loop might well translate to almost the same
-     speedup for the whole program.
+ * On the bright side, not all bits and pieces of code need to be 
+     optimized. Even when code is too slow, it is often enough to identify critical
+     inner loops and realize that a 10 x speedup in just that inner loop might well
+     translate to almost the same speedup for the whole program.
 
 One could also take the opposite point of view and argue that all high performance
 code should be written in a low-level language, such as C or Fortran. But then again,
@@ -174,8 +173,8 @@ then called by R.
      [parallelization][openblas].
  * Performance-critical code chunks can also be compiled into a dynamically linked
      [C, Fortran][dynload] or [C++][rcpp] library and then called from R. By moving those
-     chunks to a compiled language (which means, in the easiest case, using `apply` instead
-     of `for`) most of the execution time can be spent in compiled code.
+     chunks to a compiled language (which means, in the easiest case, using `apply` on a
+     matrix instead of `for`) most of the execution time can be spent in compiled code.
 
 Follow ups
 ----------
