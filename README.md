@@ -87,7 +87,9 @@ your code is [doing the right thing][natreproc] as opposed to giving you the out
 *you want*.
 
  * Don't worry too much when doing exploratory analyses. Those are there to give
-     you ideas what your data *might* contain.
+     you ideas what your data *might* contain. As you progress and realize you are
+     using the same code in multiple places, abstract away the functionality
+     in a meaningful way.
  * Writing test- and debuggable code is about splitting your functionality into segments that
      are simple enough so you know the right output for a given input. If you use a
      function more often, you can write a separate test script that makes sure that makes sure 
